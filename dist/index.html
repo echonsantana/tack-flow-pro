@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow Pro | Gestor Inteligente de Tareas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📋</text></svg>">
+  <meta name="theme-color" content="#4361ee">
+  <link rel="stylesheet" crossorigin href="/tack-flow-pro/assets/index-l_623a5c.css">
+</head>
+<body>
+  <!-- Pantalla de Login -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-container">
+    <div class="login-header">
+      <div class="app-logo">
+        <img src="/tack-flow-pro/assets/Logo-2DufXkOh.png" alt="TaskFlow Pro" class="logo-image">
+        <div class="app-name">
+        </div>
+        <h1 class="login-subtitle">TaskFlow <span class="logo-highlight">Pro</span></h1>
+        
+      </div>
+    </div>
+    
+    <form id="loginForm">
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" id="username" placeholder="Usuario" required />
+       
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="password" placeholder="Contraseña" required />
+      
+      </div>
+      
+      <button type="submit" class="btn-primary btn-login">
+        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+      </button>
+       
+      <!--
+      <div class="demo-credentials">
+       
+        <p><i class="fas fa-info-circle"></i> Demo: usuario: <strong>admin</strong> / contraseña: <strong>admin</strong></p> 
+      </div>-->
+    </form>
+    
+    <div class="login-footer">
+      <p>¿No tienes cuenta? <a href="#" id="showRegister">Crear una cuenta</a></p>
+    </div>
+  </div>
+</div>
+
+  <!-- Pantalla de Registro -->
+  <div id="registerScreen" class="login-screen hidden">
+    <div class="login-container">
+      <div class="login-header">
+        <div class="app-logo">
+          <i class="fas fa-user-plus"></i>
+          <h1>Crear Cuenta</h1>
+        </div>
+        <p class="login-subtitle">Únete a TaskFlow Pro</p>
+      </div>
+      <form id="registerForm">
+        <div class="input-group">
+          <i class="fas fa-user"></i>
+          <input type="text" id="regUsername" placeholder="Usuario" required />
+        </div>
+        <div class="input-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="regEmail" placeholder="Correo electrónico" required />
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="regPassword" placeholder="Contraseña" required />
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="regConfirmPassword" placeholder="Confirmar contraseña" required />
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="terms" required />
+          <label for="terms">Acepto los <a href="#">términos y condiciones</a></label>
+        </div>
+        <button type="submit" class="btn-primary">
+          <i class="fas fa-user-plus"></i> Crear Cuenta
+        </button>
+      </form>
+      <div class="login-footer">
+        <p>¿Ya tienes cuenta? <a href="#" id="showLogin">Inicia sesión aquí</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aplicación Principal -->
+  <div id="app" class="hidden">
+    <!-- Header Principal -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="app-title">
+          <img src="/tack-flow-pro/assets/Logo-2DufXkOh.png" alt="TaskFlow Pro" class="logo-img">
+          <!--<i class="fas fa-tasks logo-icon"></i> -->
+          <div>
+            <h1>TaskFlow<span class="logo-highlight">Pro</span></h1>
+            <span id="userWelcome" class="user-welcome"></span> 
+          </div>
+        </div>
+      </div>
+      
+      <div class="header-center">
+        <div class="stats-summary">
+          <div class="stat-item">
+            <i class="fas fa-clock"></i>
+            <span id="pendingCount">0</span> pendientes
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-check-circle"></i>
+            <span id="completedCount">0</span> completadas
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-fire"></i>
+            <span id="todayCount">0</span> hoy
+          </div>
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <div class="header-actions">
+          <button id="themeToggle" class="btn-icon" title="Cambiar tema">
+            <i class="fas fa-moon"></i>
+          </button>
+          <button id="notificationBtn" class="btn-icon" title="Notificaciones">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge hidden" id="notificationCount">0</span>
+          </button>
+          <button id="quickTaskBtn" class="btn-primary">
+            <i class="fas fa-plus"></i> Nueva Tarea
+          </button>
+          <div class="user-menu">
+            <button id="userMenuBtn" class="btn-icon">
+              <i class="fas fa-user-circle"></i>
+            </button>
+            <div class="dropdown-menu hidden" id="userDropdown">
+              <div class="dropdown-header">
+                <strong id="dropdownUsername"></strong>
+                <small id="dropdownEmail"></small>
+              </div>
+              <a href="#" id="colorSettingsBtn"><i class="fas fa-palette"></i> Personalizar tema</a>
+              <a href="#" id="manageTagsBtn"><i class="fas fa-tags"></i> Gestionar etiquetas</a>
+              <a href="#" id="exportBtn"><i class="fas fa-file-export"></i> Exportar datos</a>
+              <div class="dropdown-divider"></div>
+              <a href="#" id="logoutBtn" class="logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Panel de Filtros Avanzados -->
+    <section class="filters-panel">
+      <div class="search-container">
+        <input type="text" id="search" placeholder="Buscar en tareas..." />
+        <button id="searchBtn" class="btn-icon small" title="Buscar">
+          <i class="fas fa-search"></i>
+        </button>
+        <button id="clearSearch" class="btn-icon small" title="Limpiar búsqueda">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="filters-grid">
+        <select id="filterStatus" class="filter-select">
+          <option value="all">📋 Todas las tareas</option>
+          <option value="pending">⏳ Pendientes</option>
+          <option value="completed">✅ Completadas</option>
+        </select>
+        
+        <select id="filterPriority" class="filter-select">
+          <option value="all">🎯 Todas las prioridades</option>
+          <option value="high">🔥 Alta prioridad</option>
+          <option value="medium">⚡ Media prioridad</option>
+          <option value="low">💤 Baja prioridad</option>
+        </select>
+        
+        <select id="filterCategory" class="filter-select">
+          <option value="all">📂 Todas las categorías</option>
+        </select>
+        
+        <select id="filterTags" class="filter-select">
+          <option value="all">🏷️ Todas las etiquetas</option>
+        </select>
+        
+        <input type="date" id="filterDate" class="filter-date" />
+        
+        <button id="clearFilters" class="btn-secondary">
+          <i class="fas fa-filter-circle-xmark"></i> Limpiar filtros
+        </button>
+      </div>
+    </section>
+
+    <!-- Contenido Principal -->
+    <main class="app-main">
+      <!-- Sidebar de Categorías -->
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <h3><i class="fas fa-folder"></i> Categorías</h3>
+          <div id="categoryList" class="category-list">
+            <!-- Categorías se cargarán dinámicamente -->
+          </div>
+          <button id="addCategoryBtn" class="btn-text">
+            <i class="fas fa-plus-circle"></i> Nueva categoría
+          </button>
+        </div>
+        
+        <div class="sidebar-section">
+          <h3><i class="fas fa-calendar-alt"></i> Próximas fechas</h3>
+          <div id="upcomingDates" class="dates-list">
+            <!-- Fechas próximas se cargarán dinámicamente -->
+          </div>
+        </div>
+        
+        <div class="sidebar-section">
+          <h3><i class="fas fa-chart-pie"></i> Estadísticas</h3>
+          <div class="stats-widget">
+            <div class="stat-circle">
+              <div class="circle-progress" id="completionProgress">
+                <span class="progress-value">0%</span>
+              </div>
+              <p>Completadas</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Lista de Tareas -->
+      <section class="content-area">
+        <div class="content-header">
+          <h2 id="tasksTitle">Mis Tareas</h2>
+          <div class="view-controls">
+            <button id="viewGrid" class="btn-icon active" title="Vista cuadrícula">
+              <i class="fas fa-th"></i>
+            </button>
+            <button id="viewList" class="btn-icon" title="Vista lista">
+              <i class="fas fa-list"></i>
+            </button>
+            <button id="sortTasks" class="btn-secondary">
+              <i class="fas fa-sort-amount-down"></i> Ordenar
+            </button>
+          </div>
+        </div>
+        
+        <div id="taskList" class="task-grid">
+          <!-- Tareas se cargarán dinámicamente -->
+        </div>
+        
+        <div id="emptyState" class="empty-state hidden">
+          <div class="empty-icon">
+              <img src="/tack-flow-pro/assets/Libr5-ZOlYA7Qt.png" width="400" height="240" class="empty-icon-img">
+          </div>
+          <h3>¡No hay tareas!</h3>
+          <p>Comienza agregando una nueva tarea o cambia los filtros.</p>
+          <button id="newTaskBtn" class="btn-primary">
+            <i class="fas fa-plus"></i> Crear primera tarea
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal de Tarea -->
+    <div id="modal" class="modal hidden">
+      <div class="modal-content task-modal">
+        <div class="modal-header">
+          <h2 id="modalTitle"><i class="fas fa-tasks"></i> Nueva Tarea</h2>
+          <button class="modal-close" id="cancelBtn">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <form id="taskForm" class="task-form">
+          <input type="hidden" id="taskId" />
+          
+          <div class="form-section">
+            <div class="input-group">
+              <label for="title">Título *</label>
+              <input type="text" id="title" placeholder="¿Qué necesitas hacer?" required />
+            </div>
+            
+            <div class="input-group">
+              <label for="description">Descripción</label>
+              <textarea id="description" rows="3" placeholder="Agrega detalles, enlaces o notas importantes..."></textarea>
+            </div>
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="priority"><i class="fas fa-exclamation-circle"></i> Prioridad</label>
+              <div class="priority-selector">
+                <button type="button" class="priority-option" data-value="high">
+                  <i class="fas fa-fire"></i> Alta
+                </button>
+                <button type="button" class="priority-option active" data-value="medium">
+                  <i class="fas fa-bolt"></i> Media
+                </button>
+                <button type="button" class="priority-option" data-value="low">
+                  <i class="fas fa-leaf"></i> Baja
+                </button>
+              </div>
+              <input type="hidden" id="priority" value="medium" />
+            </div>
+            
+            <div class="form-group">
+              <label for="category"><i class="fas fa-folder"></i> Categoría</label>
+              <select id="category" class="select-custom">
+                <option value="general">📁 General</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="dueDate"><i class="fas fa-calendar-day"></i> Fecha límite</label>
+              <input type="date" id="dueDate" />
+            </div>
+            
+            <div class="form-group">
+              <label><i class="fas fa-clock"></i> Recordatorio</label>
+              <select id="reminder" class="select-custom">
+                <option value="none">Sin recordatorio</option>
+                <option value="15min">15 minutos antes</option>
+                <option value="1hour">1 hora antes</option>
+                <option value="1day">1 día antes</option>
+                <option value="2days">2 días antes</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-section">
+            <label><i class="fas fa-tags"></i> Etiquetas</label>
+            <div id="tagsContainer" class="tags-container">
+              <!-- Etiquetas se añadirán aquí dinámicamente -->
+            </div>
+            <div class="tag-input-container">
+              <div class="tag-suggestions-container">
+                <input type="text" id="tagInput" placeholder="Escribe para buscar o crear etiquetas..." />
+                <div id="tagSuggestions" class="tag-suggestions hidden"></div>
+              </div>
+              <button type="button" id="showTagsManager" class="btn-text">
+                <i class="fas fa-cog"></i> Gestionar etiquetas
+              </button>
+            </div>
+          </div>
+          
+          <div class="form-section">
+            <label><i class="fas fa-list-check"></i> Subtareas (Opcional)</label>
+            <div id="subtasksContainer" class="subtasks-container">
+              <div class="subtask-input">
+                <input type="text" id="subtaskInput" placeholder="Añadir subtarea..." />
+                <button type="button" id="addSubtaskBtn" class="btn-icon small">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+              <div id="subtasksList" class="subtasks-list">
+                <!-- Subtareas se cargarán aquí -->
+              </div>
+            </div>
+          </div>
+          
+          <div class="modal-footer">
+            <button type="button" id="deleteTaskBtn" class="btn-danger hidden">
+              <i class="fas fa-trash"></i> Eliminar
+            </button>
+            <div class="footer-right">
+              <button type="button" id="cancelBtn2" class="btn-secondary">
+                Cancelar
+              </button>
+              <button type="submit" class="btn-primary">
+                <i class="fas fa-save"></i> Guardar Tarea
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal de Vista Detallada -->
+    <div id="taskDetailModal" class="modal hidden">
+      <div class="modal-content detail-modal">
+        <div class="modal-header">
+          <h2 id="detailTitle"></h2>
+          <button class="modal-close" id="closeTaskDetail">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="detail-content">
+          <div class="detail-meta">
+            <span class="detail-badge" id="detailStatus"></span>
+            <span class="detail-badge" id="detailPriority"></span>
+            <span class="detail-badge" id="detailCategory"></span>
+            <div class="detail-date">
+              <i class="fas fa-calendar"></i>
+              <span id="detailDueDate"></span>
+            </div>
+          </div>
+          
+          <div class="detail-section">
+            <h3><i class="fas fa-align-left"></i> Descripción</h3>
+            <div id="detailDescription" class="detail-description"></div>
+          </div>
+          
+          <div id="detailTagsSection" class="detail-section hidden">
+            <h3><i class="fas fa-tags"></i> Etiquetas</h3>
+            <div id="detailTags" class="detail-tags"></div>
+          </div>
+          
+          <div id="detailSubtasksSection" class="detail-section hidden">
+            <h3><i class="fas fa-list-check"></i> Subtareas</h3>
+            <div id="detailSubtasks" class="detail-subtasks"></div>
+          </div>
+          
+          <div class="detail-footer">
+            <div class="detail-info">
+              <small><i class="fas fa-calendar-plus"></i> Creada: <span id="detailCreatedAt"></span></small>
+              <small><i class="fas fa-calendar-check"></i> Actualizada: <span id="detailUpdatedAt"></span></small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="detail-actions">
+          <button id="detailEditBtn" class="btn-primary">
+            <i class="fas fa-edit"></i> Editar
+          </button>
+          <button id="detailToggleBtn" class="btn-secondary">
+            <i class="fas fa-check-circle"></i> Marcar como completada
+          </button>
+          <button id="detailDeleteBtn" class="btn-danger">
+            <i class="fas fa-trash"></i> Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Gestión de Etiquetas -->
+<div id="tagsModal" class="modal hidden">
+  <div class="modal-content tags-modal">
+    <div class="modal-header">
+      <h2><i class="fas fa-tags"></i> Gestión de Etiquetas</h2>
+      <button class="modal-close" id="closeTagsModal">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <!-- Formulario para AÑADIR nueva etiqueta -->
+      <div class="add-tag-form">
+        <h3><i class="fas fa-plus-circle"></i> Añadir Nueva Etiqueta</h3>
+        <div class="input-group">
+          <input type="text" id="newTagName" placeholder="Nombre de la etiqueta" />
+          <input type="color" id="newTagColor" value="#4361ee" title="Seleccionar color" />
+          <button id="addTagBtn" class="btn-primary">
+            <i class="fas fa-plus"></i> Crear
+          </button>
+        </div>
+      </div>
+      
+      <!-- Formulario para EDITAR etiqueta (oculto por defecto) -->
+      <div id="editTagForm" class="edit-tag-form hidden">
+        <h3><i class="fas fa-edit"></i> Editar Etiqueta</h3>
+        <div class="input-group">
+          <input type="text" id="editTagName" placeholder="Nuevo nombre" />
+          <input type="color" id="editTagColor" value="#4361ee" title="Seleccionar color" />
+          <input type="hidden" id="editTagId" />
+          <div class="form-actions">
+            <button id="saveTagBtn" class="btn-primary">
+              <i class="fas fa-save"></i> Guardar
+            </button>
+            <button id="cancelEditBtn" class="btn-secondary">
+              <i class="fas fa-times"></i> Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Lista de etiquetas -->
+      <div id="tagsList" class="tags-list">
+        <!-- Lista de etiquetas se cargará aquí -->
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Modal de Configuración de Colores -->
+    <div id="colorSettingsModal" class="modal hidden">
+      <div class="modal-content colors-modal">
+        <div class="modal-header">
+          <h2><i class="fas fa-palette"></i> Personalizar Tema</h2>
+          <button class="modal-close" id="cancelColorsBtn">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="modal-body">
+          <div class="theme-presets">
+            <h3>Presets de tema</h3>
+            <div class="preset-grid">
+              <button class="preset-btn" data-preset="default">
+                <div class="preset-preview" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);"></div>
+                <span>Claro</span>
+              </button>
+              <button class="preset-btn" data-preset="dark">
+                <div class="preset-preview" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);"></div>
+                <span>Oscuro</span>
+              </button>
+              <button class="preset-btn" data-preset="warm">
+                <div class="preset-preview" style="background: linear-gradient(135deg, #fffaf0 0%, #fed7aa 100%);"></div>
+                <span>Cálido</span>
+              </button>
+              <button class="preset-btn" data-preset="cool">
+                <div class="preset-preview" style="background: linear-gradient(135deg, #f0f9ff 0%, #bae6fd 100%);"></div>
+                <span>Frío</span>
+              </button>
+              <button class="preset-btn" data-preset="professional">
+                <div class="preset-preview" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);"></div>
+                <span>Profesional</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="custom-colors">
+            <h3>Personalización avanzada</h3>
+            <div class="color-pickers">
+              <div class="color-picker">
+                <label>Color primario</label>
+                <input type="color" id="primaryColor" value="#4361ee" />
+                <span class="color-value" id="primaryValue">#4361ee</span>
+              </div>
+              <div class="color-picker">
+                <label>Color secundario</label>
+                <input type="color" id="secondaryColor" value="#64748b" />
+                <span class="color-value" id="secondaryValue">#64748b</span>
+              </div>
+              <div class="color-picker">
+                <label>Fondo de app</label>
+                <input type="color" id="appBgColor" value="#f8fafc" />
+                <span class="color-value" id="appBgValue">#f8fafc</span>
+              </div>
+              <div class="color-picker">
+                <label>Fondo de tarjetas</label>
+                <input type="color" id="cardBgColor" value="#ffffff" />
+                <span class="color-value" id="cardBgValue">#ffffff</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" id="resetColorsBtn" class="btn-secondary">
+            <i class="fas fa-undo"></i> Restaurar predeterminado
+          </button>
+          <button type="button" id="saveColorsBtn" class="btn-primary">
+            <i class="fas fa-save"></i> Guardar cambios
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Categorías -->
+    <div id="categoryModal" class="modal hidden">
+      <div class="modal-content category-modal">
+        <div class="modal-header">
+          <h2><i class="fas fa-folder"></i> Gestionar Categorías</h2>
+          <button class="modal-close" id="closeCategoryModal">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="modal-body">
+          <div class="add-category-form">
+            <div class="input-group">
+              <input type="text" id="categoryName" placeholder="Nombre de la categoría" />
+              <input type="color" id="categoryColor" value="#4361ee" />
+              <button id="addCategoryBtnModal" class="btn-primary">
+                <i class="fas fa-plus"></i> Añadir
+              </button>
+            </div>
+          </div>
+          
+          <div id="categoriesList" class="categories-list">
+            <!-- Categorías se cargarán aquí -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notificaciones Toast -->
+    <div id="notificationCenter" class="notification-center hidden">
+      <div class="notification-header">
+        <h3><i class="fas fa-bell"></i> Notificaciones</h3>
+        <button id="closeNotifications" class="btn-icon">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div id="notificationsList" class="notifications-list">
+        <!-- Notificaciones se cargarán aquí -->
+      </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner hidden">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Toasts de Notificación -->
+    <div id="toastContainer"></div>
+  </div>
+
+  <script src="/src/app.js"></script>
+</body>
+</html>
