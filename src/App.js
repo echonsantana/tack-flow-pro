@@ -1264,7 +1264,11 @@ class App {
     // Auth events
     document.getElementById('loginForm').addEventListener('submit', (e) => this.handleLogin(e));
     document.getElementById('registerForm').addEventListener('submit', (e) => this.handleRegister(e));
-    document.getElementById('showRegister').addEventListener('click', (e) => { e.preventDefault(); this.showRegister(); });
+    document.getElementById('showRegister').addEventListener('click', (e) => { 
+    e.preventDefault(); 
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('registerScreen').classList.remove('hidden');
+});
     document.getElementById('showLogin').addEventListener('click', (e) => { e.preventDefault(); this.showLogin(); });
     
     // Header actions
